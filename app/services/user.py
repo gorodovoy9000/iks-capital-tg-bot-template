@@ -10,6 +10,12 @@ from .base import BaseService
 
 
 class AdminUserService(BaseService):
+    async def get_by_user_id(self, user_id: int) -> AdminUserDto | None:
+        obj = await self.repository.admin_users.get_by_user_id(user_id=user_id)
+        if obj is None:
+            return None
+        return obj.dto()
+
     async def get_by_username(self, username: str) -> AdminUserDto | None:
         obj = await self.repository.admin_users.get_by_username(username=username)
         if obj is None:

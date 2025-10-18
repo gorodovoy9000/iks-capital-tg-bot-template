@@ -9,6 +9,10 @@ from .base import BaseRepository
 
 
 class AdminUsersRepository(BaseRepository):
+    async def get_by_user_id(self, user_id: int) -> Optional[AdminUser]:
+        stmt = select(AdminUser).where(AdminUser.user_id == user_id)
+        return await self.session.scalar(stmt)
+
     async def get_by_username(self, username: str) -> Optional[AdminUser]:
         stmt = select(AdminUser).where(AdminUser.username == username)
         return await self.session.scalar(stmt)
