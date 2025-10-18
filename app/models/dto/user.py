@@ -12,6 +12,7 @@ class AdminUserDto(ActiveRecordModel):
     username: str
     password_hash: str = Field(..., alias="password")
     is_blocked: bool = False
+    is_superadmin: bool = False
 
     def check_password(self, password: str) -> bool:
         """
