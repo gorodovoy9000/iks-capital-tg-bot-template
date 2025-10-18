@@ -10,9 +10,10 @@ from starlette_admin.contrib.sqla import Admin
 
 from app.admin.auth import CustomAuthProvider
 from app.admin.middlewares import DBSessionMiddleware
-from app.admin.views import UserView
+from app.admin.views import AdminUserView, UserView
 from app.models.config import AppConfig
-from app.models.sql import User
+from app.models.sql import AdminUser, User
+from app.validators import InAdminUser
 
 
 class CustomAdmin(Admin):
@@ -85,6 +86,7 @@ def setup_admin(app: FastAPI, config: AppConfig) -> FastAPI:
 
     # Add views
     admin.add_view(UserView(User, icon="fa fa-users"))
+    admin.add_view(AdminUserView(AdminUser, icon="fa fa-users", pydantic_model=InAdminUser))
 
     admin.mount_to(app)
     return app
