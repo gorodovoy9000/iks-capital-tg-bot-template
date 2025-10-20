@@ -5,7 +5,7 @@ import bcrypt
 
 
 def generate_random_password(length=16):
-    alphabet = string.ascii_letters + string.digits + string.punctuation
+    alphabet = string.ascii_letters + string.digits + r"""!"#$%&'()*+,-.:;?@[]^_{|}"""
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
