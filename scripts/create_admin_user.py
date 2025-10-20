@@ -47,13 +47,14 @@ async def main() -> None:
         try:
             await session.execute(
                 text(
-                    "INSERT INTO users.admin (name, username, password) "
-                    "VALUES (:name, :username, :password)"
+                    "INSERT INTO users.admin (name, username, password, is_superadmin) "
+                    "VALUES (:name, :username, :password, :is_superadmin)"
                 ),
                 {
                     "name": name,
                     "username": username,
                     "password": hashed_password,
+                    "is_superadmin": True,
                 },
             )
             await session.commit()
