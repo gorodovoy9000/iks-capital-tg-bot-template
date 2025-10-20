@@ -1,7 +1,6 @@
 import logging
 from typing import Any
 
-from starlette.datastructures import FormData
 from starlette.requests import Request
 from starlette_admin import (
     BooleanField,
@@ -14,7 +13,7 @@ from starlette_admin.contrib.sqla.ext.pydantic import ModelView
 from starlette_admin.exceptions import ActionFailed
 
 from app.models.sql.user import AdminUser
-from app.utils.auth import generate_password_and_hash
+from app.utils.auth import generate_password_and_hash, generate_random_password
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -55,14 +54,8 @@ class AdminUserView(ModelView):
         password, password_hash = generate_password_and_hash()
         admin_user.password = password_hash
 
-    async def create(self, *args, **kwargs):
-        obj = await super().create(*args, **kwargs)
-        print("create", obj)
-        return obj
-
-    async def after_create(self, request: Request, obj):
-        print("after_create obj", obj)
-
+    def can_view_details(self, request: Request) -> bool:
+        return not request.state.user.is_blocked
 
     def can_create(self, request: Request) -> bool:
         return request.state.user.is_superadmin
@@ -96,19 +89,10 @@ class AdminUserView(ModelView):
         submit_btn_text="Yes, proceed",
         submit_btn_class="btn-success",
         action_btn_class="btn-info",
-        form="""
-        <form>
-            <div class="mt-3">
-                <input type="text" class="form-control" name="new-password" placeholder="Enter new password">
-            </div>
-        </form>
-        """,
     )
     async def reset_password_row_action(self, request: Request, pk: Any) -> str:
-        # get data from request
-        data: FormData = await request.form()
         user_id = int(pk)
-        new_password = data.get("new-password")
+        new_password = generate_random_password()
 
         # check user is superadmin
         if not request.state.user.is_superadmin:

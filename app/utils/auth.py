@@ -10,9 +10,14 @@ def generate_random_password(length=16):
     return password
 
 
-def generate_password_and_hash() -> tuple[str, str]:
-    password = generate_random_password()
+def hash_password(password: str) -> str:
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode(
         "utf-8"
     )
+    return hashed_password
+
+
+def generate_password_and_hash() -> tuple[str, str]:
+    password = generate_random_password()
+    hashed_password = hash_password(password)
     return password, hashed_password
