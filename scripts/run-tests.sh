@@ -7,4 +7,4 @@ source /app/.venv/bin/activate
 uv sync --dev
 
 alembic upgrade head
-pytest tests/ -v --tb=short
+pytest tests/ -v -s --tb=short
